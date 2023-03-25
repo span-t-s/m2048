@@ -163,23 +163,23 @@ def simulate(board,depth=3):
     boardtree1.getbestmove()(board)
 
 
-def simulate(board,depth=3):
-    boad_before = board.copy()
-    moves = [move_left, move_right, move_up, move_down]
-    move_scores = []
+# def simulate(board,depth=3):
+#     boad_before = board.copy()
+#     moves = [move_left, move_right, move_up, move_down]
+#     move_scores = []
 
-    for move in moves:
-        board_copy = board[:]
-        move(board_copy)
-        if board_copy != boad_before:
-            score_list = [getboardscore(x) for x in generate_new(board_copy)]
-            score = sum(score_list) / len(score_list)
-        else:
-            score = -float('inf')
-        move_scores.append((score, move))
+#     for move in moves:
+#         board_copy = board[:]
+#         move(board_copy)
+#         if board_copy != boad_before:
+#             score_list = [getboardscore(x) for x in generate_new(board_copy)]
+#             score = sum(score_list) / len(score_list)
+#         else:
+#             score = -float('inf')
+#         move_scores.append((score, move))
 
-    best_move = max(move_scores, key=lambda x: x[0])[1]
-    best_move(board)
+#     best_move = max(move_scores, key=lambda x: x[0])[1]
+#     best_move(board)
 ####################
 # 初始化Pygame
 pygame.init()
