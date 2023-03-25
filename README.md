@@ -11,7 +11,9 @@ Install pygame, run in powershell or command line:
 pip install pygame
 ```
 run the game in python
-
+```shell
+python m2048.py
+```
 # Instruction
 
 w,a,s,d or ↑,↓,←,→ for moving blocks
