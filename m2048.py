@@ -1,4 +1,4 @@
-# version-0.1
+# version-0.2
 import pygame
 import random
 import time
@@ -7,63 +7,23 @@ import copy
 simulating = False
 #########################
 def getboardscore(board) -> int: # board中除了0的数，sum(这些数字与相邻方格差的绝对值)就是要扣的局面分
-    # log2_board = [[int(math.log2(j)) if j > 0 else 0 for j in row] for row in board]
+
     boardscore = 0
-    # board = copy.deepcopy(board)
+    board = copy.deepcopy(board)
     
-    # i,j = 0,0
-    # for (i,j) in ((0,0),(0,3),(3,0),(3,3)):
-    #     if  board[i][j] > 0:
-    #         if board[i][j] == board[abs(i-1)][j]:
-    #             board[i][j] *=2; board[abs(i-1)][j] = 0
-    #         elif board[i][j] == board[i][3-j]:
-    #             board[i][j] *=2; board[i][3-j] = 0
-    #         if board[i][j] == board[abs(i-1)][j]*2 or board[i][j] == board[i][3-j]*2:
-    #             boardscore -= board[i][j]
-    #         else: boardscore -= board[i][j]*2
-    # for (i,j) in ((0,1),(0,2),(3,1),(3,2)):
-    #     if  board[i][j] > 0:
-    #         if board[i][j] == board[i][3-j]:
-    #             board[i][j] *=2; board[i][3-j] = 0
-    #         elif board[i][j] == board[abs(i-1)][j]:
-    #             board[i][j] *=2; board[abs(i-1)][j] = 0
-    #         if board[i][j] == board[i][3-j]*2 or board[i][j] == board[abs(i-1)][j]*2:
-    #             boardscore -= board[i][j]/2
-    #         else: boardscore -= board[i][j]*3
-    # for (j,i) in ((0,1),(0,2),(3,1),(3,2)):
-    #     if  board[i][j] > 0:
-    #         if board[i][j] == board[3-i][j]:
-    #             board[i][j] *=2; board[3-i][j] = 0
-    #         elif board[i][j] == board[i][abs(j-1)]:
-    #             board[i][j] *=2; board[i][abs(j-1)] = 0
-    #         if board[i][j] == board[3-i][j]*2 or board[i][j] == board[i][abs(j-1)]*2:
-    #             boardscore -= board[i][j]*1.5
-    #         else: boardscore -= board[i][j]*3
-    # for (i,j) in ((1,1),(1,2),(2,1),(2,2)):
-    #     if  board[i][j] > 0:
-    #         if board[i][j] == board[3-i][j]:
-    #             board[i][j] *=2; board[3-i][j] = 0
-    #         elif board[i][j] == board[i][3-j]:
-    #             board[i][j] *=2; board[i][3-j] = 0
-    #         if board[i][j] == board[3-i][j]*2 or board[i][j] == board[i][3-j]*2:
-    #             boardscore -= board[i][j]*2
-    #         else: boardscore -= board[i][j]*4
-
-    for j in range(3):
-        for i in range(4):
-            j1 = board[i][j]
-            j2 = board[i][j+1]
-
-            if j1 and j2:
-                boardscore -= abs(j2-j1)
+    # for j in range(3):
+    #     for i in range(4):
+    #         j1 = board[i][j]
+    #         if not j1:j1 = 0
+    #         j2 = board[i][j+1]
+    #         if not j2:j2 = 0
+    #         boardscore -= abs(j2-j1)
         
-    for i in range(3):
+    for i in range(4):
         for j in range(4):
-            i1 = board[i][j]
-            i2 = board[i+1][j]
-
-            if i1 and i2:
-                boardscore -= abs(i2-i1)
+            boardscore += board[i][j]**2
+            for x,y in [(-1,0),(1,0),(0,-1),(0,1)]:
+                boardscore += board[i][j]*(board[i+x][j+y] if 0<=i+x<4 and 0<=j+y<4 else board[i][j])
 
     return boardscore
 
@@ -148,7 +108,7 @@ class createboardtree():
         max_index = movescore.index(self.getmax(movescore))
         return [move_left,move_right,move_up,move_down][max_index]
 
-def simulate(board,depth=3):
+def simulate(board,depth=2):
     boardtree1 = createboardtree(board)
     boardtrees = [boardtree1]
 
@@ -245,7 +205,11 @@ def get_block_color(number):
     elif number == 1024:
         return (255, 128, 192)
     elif number == 2048:
-        return (128, 128, 128)
+        return (255, 192, 128)
+    elif number == 4096:
+        return (128, 255, 192)
+    elif number == 9192:
+        return (128, 255, 192)
 
 # 绘制分数
 def draw_score():
