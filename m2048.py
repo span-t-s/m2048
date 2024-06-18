@@ -6,7 +6,7 @@ import threading
 import copy
 simulating = False
 #########################
-def getboardscore(board) -> int: # board中除了0的数，sum(这些数字与相邻方格差的绝对值)就是要扣的局面分
+def getboardscore(board) -> int:
 
     boardscore = 0
     board = copy.deepcopy(board)
