@@ -13,21 +13,16 @@ def getboardscore(board) -> int:
     boardscore = 0
     board = deepcopy(board)
     
-    # for j in range(3):
-    #     for i in range(4):
-    #         j1 = board[i][j]
-    #         if not j1:j1 = 0
-    #         j2 = board[i][j+1]
-    #         if not j2:j2 = 0
-    #         boardscore -= abs(j2-j1)
-        
     for i in range(4):
         for j in range(4):
-            boardscore += board[i][j]**2
-            for x,y in [(-1,0),(1,0),(0,-1),(0,1)]:
-                if (0<=i+x<4 and 0<=j+y<4):
-                    Factor = board[i+x][j+y] if board[i+x][j+y] else board[i][j] >> 2
-                else: Factor = board[i][j] >> 1
+            if board[i][j]:
+                boardscore += board[i][j]**2
+                Factor = 0
+                for x,y in [(-1,0),(1,0),(0,-1),(0,1)]:
+                    if (0<=i+x<4 and 0<=j+y<4):
+                        if board[i+x][j+y] <= board[i][j]:
+                            Factor = max(Factor,board[i+x][j+y])
+                    else: boardscore += board[i][j]**2 >> 1
                 boardscore += board[i][j]*Factor
 
     return boardscore
@@ -62,25 +57,25 @@ class Boardtree():
         self.currentboard = currentboard
         if branches: self.branches = branches
             
-        else:self.branches = [[],[],[],[]]
+        else:self.branches = [None,None,None,None]
 
     @staticmethod
     @in_simulation
     def board_next(board,movement):
-        board_before = deepcopy(board)
-        movement(board)
-        if board != board_before:
-            return generate_new(board)
+        board_tmp = deepcopy(board)
+        movement(board_tmp)
+        if board_tmp != board:
+            return generate_new(board_tmp)
         else:
             return None
 
     def addbranches(self,i,movement,direction):
-        board_next_list = self.board_next(self.currentboard.copy(),movement)
+        board_next_list = self.board_next(self.currentboard,movement)
         if board_next_list:
+            self.branches[i] = []
             for x in board_next_list:
                 newboardtree = Boardtree(x,self.order + direction)
                 self.branches[i].append(newboardtree)
-        else: self.branches[i] = None
 
     def grow(self):
             self.addbranches(0,move_left,'l')
@@ -92,11 +87,11 @@ class Boardtree():
     def getmax(listwithNone):
         list_filtered = list(filter(lambda x: x is not None, listwithNone))
         if list_filtered != []: return max(list_filtered)
-        else: return -100000
+        else: return -100000000
 
     @staticmethod
-    def getmovescore(self):
-        if self.branches==[[],[],[],[]]:
+    def getmovescore(self)->list:
+        if self.branches==[None,None,None,None]:
             return [getboardscore(self.currentboard)]*4
         else:
             score_list = [0,0,0,0]
@@ -361,7 +356,7 @@ def move_down(board):
     move_right(board)
     board[:] = transpose(board)
 
-# 检查是否新增方块
+# 检查移动失败退回还是新增方块
 def check_add_new(board_before):
     if board != board_before:
         draw_board()
