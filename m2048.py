@@ -5,7 +5,7 @@ import time
 import threading
 from copy import deepcopy
 from collections import deque
-
+from typing import List
 simulating = False
 #########################
 def getboardscore(board) -> int:
@@ -22,12 +22,12 @@ def getboardscore(board) -> int:
                     if (0<=i+x<4 and 0<=j+y<4):
                         if board[i+x][j+y] <= board[i][j]:
                             Factor = max(Factor,board[i+x][j+y])
-                    else: boardscore += board[i][j]**2 >> 1
+                    else: boardscore += board[i][j]**2 >> 1 #对周围出现墙壁的方块增加权重
                 boardscore += board[i][j]*Factor
 
     return boardscore
 
-def generate_new(boardx):
+def generate_new(boardx)->List:
     board_list=[]
     for i in range(4):
         for j in range(4):
@@ -86,11 +86,11 @@ class Boardtree():
     @staticmethod
     def getmax(listwithNone):
         list_filtered = list(filter(lambda x: x is not None, listwithNone))
-        if list_filtered != []: return max(list_filtered)
-        else: return -100000000
+        return max(list_filtered)
+
 
     @staticmethod
-    def getmovescore(self)->list:
+    def getmovescore(self)->List:
         if self.branches==[None,None,None,None]:
             return [getboardscore(self.currentboard)]*4
         else:
@@ -103,12 +103,12 @@ class Boardtree():
             return score_list
     
 
-    def getbestmove(self):
+    def getbestmove(self)->function:
         movescore = self.getmovescore(self)
         max_index = movescore.index(self.getmax(movescore))
         return [move_left,move_right,move_up,move_down][max_index]
 
-def simulate(board,depth=2):
+def simulate(board,depth=3):
     boardtree1 = Boardtree(board)
     boardtrees = [boardtree1]
 
