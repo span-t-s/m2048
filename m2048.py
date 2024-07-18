@@ -103,7 +103,7 @@ class Boardtree():
             return score_list
     
 
-    def getbestmove(self)->function:
+    def getbestmove(self):
         movescore = self.getmovescore(self)
         max_index = movescore.index(self.getmax(movescore))
         return [move_left,move_right,move_up,move_down][max_index]
